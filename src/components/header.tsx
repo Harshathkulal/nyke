@@ -3,10 +3,10 @@
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, ShoppingBag, Heart, User, X } from "lucide-react";
+import { Search, ShoppingBag, Heart, X } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/redux/store";
-import { useUser, SignOutButton } from "@clerk/nextjs";
+// import { useUser, SignOutButton } from "@clerk/nextjs";
 import { MobileNav } from "./mobile-nav";
 import { SiNike } from "react-icons/si";
 
@@ -17,7 +17,7 @@ export function Header() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const pathname = usePathname();
-  const { isSignedIn } = useUser();
+  // const { isSignedIn } = useUser();
   const cartCount = useSelector((state: RootState) => state.cart.itemCount);
 
   const toggleSearch = (close = false) => {
@@ -50,7 +50,7 @@ export function Header() {
     >
       {/* Top banner for large screens */}
       <div className="bg-gray-100 lg:flex flex-row-reverse text-xs font-semibold p-1 px-6 hidden">
-        {isSignedIn ? (
+        {/* {isSignedIn ? (
           <SignOutButton>
             <button className="font-medium">Logout</button>
           </SignOutButton>
@@ -58,7 +58,7 @@ export function Header() {
           <Link href="/signin" className="font-medium">
             Login
           </Link>
-        )}
+        )} */}
         <p className="px-1">Help | </p>
       </div>
 
@@ -131,7 +131,7 @@ export function Header() {
           </Link>
 
           {/* User */}
-          <Link
+          {/* <Link
             href={isSignedIn ? "/profile" : "/signin"}
             className={`transition-colors hover:text-foreground/80 ${
               pathname?.startsWith("/signin") ||
@@ -142,7 +142,7 @@ export function Header() {
             aria-label="Profile"
           >
             <User size={20} />
-          </Link>
+          </Link> */}
 
           {/* Cart */}
           <Link
