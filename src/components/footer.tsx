@@ -85,7 +85,7 @@ export const Footer = () => {
         {/* Footer Bottom */}
         <div className="flex justify-between m-2 mb-0 flex-col lg:flex-row gap-2 mt-10">
           <span className="text-sm text-gray-500 sm:text-center">
-            © 2024 Xike, Inc. All rights reserved.
+            © 2025 Nyke, Inc. All rights reserved.
           </span>
           <ul className="text-sm font-medium text-gray-500 flex flex-col lg:flex-row gap-4 mt-2">
             <li><Link href="/" className="hover:text-white">Guides</Link></li>

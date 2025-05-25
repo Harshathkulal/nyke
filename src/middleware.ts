@@ -1,60 +1,44 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
- 
-// Define route matchers
-const isCheckoutRoute = createRouteMatcher(["/checkout(.*)"]);
-const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
-const isDashboardRoute = createRouteMatcher(["/dashboard(.*)"]);
-const isPublicRoute = createRouteMatcher(["/", "/shoes(.*)"]);
-const isAuthRoute = createRouteMatcher(["/auth(.*)"]);
 
-// Configure admin email and specific user ID
-const ADMIN_EMAIL = "admin@example.com"; // Replace with your admin email
-const SPECIFIC_USER_ID = "user_xxxx"; // Replace with your specific user ID
+// Define public routes
+const isPublicRoute = createRouteMatcher([
+  "/",
+  "/signin",
+  "/signup",
+  "/sso-callback",
+]);
 
 export default clerkMiddleware(async (auth, req) => {
-  const { userId, sessionClaims } = await auth();
-  const userEmail = sessionClaims?.email as string;
+  const { userId } = await auth();
 
-  // Allow public routes without authentication
+  // Allow public routes
   if (isPublicRoute(req)) {
     return NextResponse.next();
   }
 
-  // Handle checkout routes - require authentication
-  if (isCheckoutRoute(req)) {
-    if (!userId) {
-      return NextResponse.redirect(new URL("/signin", req.url));
-    }
-    return NextResponse.next();
-  }
-
-  // Handle admin routes - require specific email
-  if (isAdminRoute(req)) {
-    if (!userId || userEmail !== ADMIN_EMAIL) {
-      return NextResponse.redirect(new URL("/", req.url));
-    }
-    return NextResponse.next();
-  }
-
-  // Handle dashboard route - require specific user ID
-  if (isDashboardRoute(req)) {
-    if (!userId || userId !== SPECIFIC_USER_ID) {
-      return NextResponse.redirect(new URL("/", req.url));
-    }
-    return NextResponse.next();
-  }
-
-  // Prevent authenticated users from accessing auth routes
-  if (userId && isAuthRoute(req)) {
+  // Redirect logged-in users away from auth pages (except callback)
+  if (
+    userId &&
+    req.nextUrl.pathname.startsWith("/auth") &&
+    req.nextUrl.pathname !== "/sso-callback"
+  ) {
     return NextResponse.redirect(new URL("/", req.url));
+  }
+
+  // Redirect unauthenticated users trying to access private routes
+  if (!userId && !req.nextUrl.pathname.startsWith("/signin")) {
+    return NextResponse.redirect(new URL("/signin", req.url));
   }
 
   return NextResponse.next();
 });
 
- 
-// See "Matching Paths" below to learn more
 export const config = {
-  matcher: ["/((?!.*\\..*|_next).*)", "/(api|trpc)(.*)"],
+  matcher: [
+    // Skip Next.js internals and all static files
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    // Always run for API routes
+    "/(api|trpc)(.*)",
+  ],
 };
