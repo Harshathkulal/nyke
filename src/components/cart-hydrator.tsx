@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setCart } from "@/lib/redux/cartSlice";
-import { CartItemProps } from "@/types/products";
+import { CartState } from "@/types/products"; // Import the CartState type
 
 export const CartHydrator = () => {
   const dispatch = useDispatch();
@@ -11,11 +11,10 @@ export const CartHydrator = () => {
   useEffect(() => {
     const storedCart = localStorage.getItem("cartItems");
     if (storedCart) {
-      const items: CartItemProps[] = JSON.parse(storedCart);
-      const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-      const itemCount = items.reduce((count, item) => count + item.quantity, 0);
+      const cartData: CartState = JSON.parse(storedCart); // Parse the entire cart object
+      const { items, total, itemCount } = cartData; // Destructure the data
 
-      dispatch(setCart({ items, total, itemCount }));
+      dispatch(setCart({ items, total, itemCount })); // Dispatch the cart state
     }
   }, [dispatch]);
 

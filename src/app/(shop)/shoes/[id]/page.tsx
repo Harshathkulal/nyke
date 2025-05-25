@@ -67,6 +67,7 @@ export default function ShoeDetail() {
       id: product.id,
       name: product.name,
       imageSrc: product.imageSrc || product.imageUrl,
+      feature: product.feature,
       price: parseFloat(product.price),
       size: selectedSize,
       quantity: 1,

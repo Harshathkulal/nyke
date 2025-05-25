@@ -48,11 +48,11 @@ export async function GET(req: NextRequest) {
 
   const whereClauses = [];
 
-  if (type) whereClauses.push(eq(products.type, type));
-  if (gender) whereClauses.push(eq(products.gender, gender));
-  if (color) whereClauses.push(ilike(products.color, `%${color}%`));
-  if (priceMin) whereClauses.push(gte(products.price, Number(priceMin)));
-  if (priceMax) whereClauses.push(lte(products.price, Number(priceMax)));
+if (type) whereClauses.push(ilike(products.type, `%${type}%`));
+if (gender) whereClauses.push(ilike(products.gender, `%${gender}%`));
+if (color) whereClauses.push(ilike(products.color, `%${color}%`));
+if (priceMin) whereClauses.push(gte(products.price, Number(priceMin)));
+if (priceMax) whereClauses.push(lte(products.price, Number(priceMax)));
 
   try {
     const filtered = await db

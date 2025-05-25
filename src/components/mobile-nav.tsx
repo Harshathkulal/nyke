@@ -9,8 +9,8 @@ import {
 import Link from "next/link";
 import { Menu, ChevronRight } from "lucide-react";
 import { SiJordan } from "react-icons/si";
-// import { SignOutButton } from "@clerk/nextjs";
-// import { useUser } from "@clerk/nextjs";
+import { SignOutButton } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 
 const NavLink = ({
   href,
@@ -33,7 +33,7 @@ const NavLink = ({
 );
 
 export function MobileNav() {
-  // const { isSignedIn } = useUser();
+  const { isSignedIn } = useUser();
 
   return (
     <div className="lg:hidden">
@@ -82,7 +82,7 @@ export function MobileNav() {
             </div>
 
             <div className="mt-6">
-              {/* {isSignedIn ? (
+              {isSignedIn ? (
                 <SignOutButton>
                   <button className="px-6 py-2 rounded-full bg-black text-white font-medium">
                     Sign Out
@@ -97,7 +97,7 @@ export function MobileNav() {
                     Sign In
                   </Link>
                 </SheetClose>
-              )} */}
+              )}
             </div>
           </div>
         </SheetContent>

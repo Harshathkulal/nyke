@@ -22,7 +22,6 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           src={product.imageSrc || product.imageUrl || ""}
           alt={product.name}
           className="object-cover rounded-lg"
-          priority
         />
       </div>
 

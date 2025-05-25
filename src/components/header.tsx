@@ -1,12 +1,12 @@
-"use client"; // 👈 Required to ensure this component is rendered only on the client
+"use client";
 
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, ShoppingBag, Heart, X } from "lucide-react";
+import { Search, ShoppingBag, Heart, X,} from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/redux/store";
-// import { useUser, SignOutButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignOutButton } from "@clerk/nextjs";
 import { MobileNav } from "./mobile-nav";
 import { SiNike } from "react-icons/si";
 
@@ -15,9 +15,9 @@ export function Header() {
   const [showHeader, setShowHeader] = useState(true);
   const lastScrollY = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isClient, setIsClient] = useState(false);
 
   const pathname = usePathname();
-  // const { isSignedIn } = useUser();
   const cartCount = useSelector((state: RootState) => state.cart.itemCount);
 
   const toggleSearch = (close = false) => {
@@ -30,7 +30,10 @@ export function Header() {
     }
   }, [search]);
 
-  // Smart sticky scroll behavior
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   useEffect(() => {
     const handleScroll = () => {
       const currentY = window.scrollY;
@@ -44,21 +47,24 @@ export function Header() {
 
   return (
     <header
-      className={`z-50 w-full border-b bg-background/95  transition-transform duration-300 ${
+      className={`z-50 w-full border-b bg-background/95 transition-transform duration-300 ${
         showHeader ? "translate-y-0" : "-translate-y-full"
       } fixed`}
     >
       {/* Top banner for large screens */}
       <div className="bg-gray-100 lg:flex flex-row-reverse text-xs font-semibold p-1 px-6 hidden">
-        {/* {isSignedIn ? (
-          <SignOutButton>
-            <button className="font-medium">Logout</button>
-          </SignOutButton>
-        ) : (
-          <Link href="/signin" className="font-medium">
-            Login
-          </Link>
-        )} */}
+        {isClient ? (
+          <>
+            <SignedIn>
+              <SignOutButton>
+                <button className="font-medium">Logout</button>
+              </SignOutButton>
+            </SignedIn>
+            <SignedOut>
+              <Link href="/signin">Login</Link>
+            </SignedOut>
+          </>
+        ) : null}
         <p className="px-1">Help | </p>
       </div>
 
@@ -70,27 +76,25 @@ export function Header() {
         </Link>
 
         {/* Desktop navigation */}
-        <div className="hidden lg:flex flex-1 items-center">
-          <nav className="flex gap-6 text-sm font-medium">
-            {[ 
-              { href: "/shoe", label: "New & Featured" },
-              { href: "/shoe/dunk", label: "Men" },
-              { href: "/shoe/women", label: "Women" },
-              { href: "/shoe/kids", label: "Kids" },
-              { href: "/shoe/sales", label: "Sales" }
-            ].map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                className={`transition-colors hover:text-foreground/80 ${
-                  pathname === href ? "text-foreground" : "text-foreground/80"
-                }`}
-              >
-                {label}
-              </Link>
-            ))}
-          </nav>
-        </div>
+        <nav className="hidden lg:flex flex-1 items-center gap-6 text-sm font-medium">
+          {[
+            { href: "/shoe", label: "New & Featured" },
+            { href: "/shoe/dunk", label: "Men" },
+            { href: "/shoe/women", label: "Women" },
+            { href: "/shoe/kids", label: "Kids" },
+            { href: "/shoe/sales", label: "Sales" },
+          ].map(({ href, label }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`transition-colors hover:text-foreground/80 ${
+                pathname === href ? "text-foreground" : "text-foreground/80"
+              }`}
+            >
+              {label}
+            </Link>
+          ))}
+        </nav>
 
         {/* Right-side icons */}
         <div className="ml-auto flex items-center gap-4">
@@ -129,20 +133,6 @@ export function Header() {
           >
             <Heart size={20} />
           </Link>
-
-          {/* User */}
-          {/* <Link
-            href={isSignedIn ? "/profile" : "/signin"}
-            className={`transition-colors hover:text-foreground/80 ${
-              pathname?.startsWith("/signin") ||
-              pathname?.startsWith("/profile")
-                ? "text-foreground"
-                : "text-foreground/80"
-            }`}
-            aria-label="Profile"
-          >
-            <User size={20} />
-          </Link> */}
 
           {/* Cart */}
           <Link

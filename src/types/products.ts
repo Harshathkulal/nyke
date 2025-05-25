@@ -15,9 +15,10 @@ export interface CartItemProps {
   name: string;
   price: number;
   quantity: number;
+  feature:string;
   size: string;
   imageSrc?: string;
-  image?: string;
+  imageUrl?: string;
 }
 
 export interface CartState {
@@ -25,3 +26,4 @@ export interface CartState {
   total: number;
   itemCount: number;
 }
+

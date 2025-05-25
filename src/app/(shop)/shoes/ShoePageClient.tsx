@@ -23,14 +23,16 @@ export default function ShoePageClient() {
     const fetchProducts = async () => {
       setLoading(true);
       setError(null);
-      try {
-        const res = await fetch("/api/products");
-        if (!res.ok) throw new Error("Failed to fetch products.");
-        const allProducts: Product[] = await res.json();
 
-        const filtered = type
-          ? allProducts.filter((p) => p.type.toLowerCase() === type.toLowerCase())
-          : allProducts;
+      try {
+        const params = new URLSearchParams();
+        if (type) params.set("type", type);
+
+        const res = await fetch(`/api/products?${params.toString()}`);
+
+        if (!res.ok) throw new Error("Failed to fetch products.");
+
+        const filtered: Product[] = await res.json();
 
         setProducts(filtered);
         setSortedProducts(filtered);
