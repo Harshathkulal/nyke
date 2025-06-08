@@ -5,6 +5,7 @@ import {
   SheetContent,
   SheetTrigger,
   SheetClose,
+  SheetTitle,
 } from "@/components/ui/sheet";
 import Link from "next/link";
 import { Menu, ChevronRight } from "lucide-react";
@@ -41,47 +42,48 @@ export function MobileNav() {
         <SheetTrigger asChild>
           <button
             aria-label="Open menu"
-            className="text-foreground/80 hover:text-foreground"
+            className="text-foreground/80 hover:text-foreground pt-2"
           >
-            <Menu size={20} />
+            <Menu size={24} />
           </button>
         </SheetTrigger>
         <SheetContent side="right" className="w-[85%] max-w-sm overflow-y-auto">
-          <div className="pt-6 pb-8">
-            <nav className="flex flex-col">
-              <NavLink href="/shoe" hasChevron>
+          <SheetTitle></SheetTitle>
+          <div className="pt-8 pb-8">
+            <nav className="flex flex-col p-4">
+              <NavLink href="/shoes" hasChevron>
                 New & Featured
               </NavLink>
-              <NavLink href="/shoe/dunk" hasChevron>
+              <NavLink href="/shoes" hasChevron>
                 Men
               </NavLink>
-              <NavLink href="/shoe" hasChevron>
+              <NavLink href="/shoes" hasChevron>
                 Women
               </NavLink>
-              <NavLink href="/shoe" hasChevron>
+              <NavLink href="/shoes" hasChevron>
                 Kids
               </NavLink>
-              <NavLink href="/shoe" hasChevron>
+              <NavLink href="/shoes" hasChevron>
                 Sales
               </NavLink>
             </nav>
 
-            <div className="flex items-center gap-2 mt-6 font-semibold px-1">
+            <div className="flex items-center gap-2 mt-6 font-semibold  p-4">
               <SiJordan size={24} />
               <span>Jordan</span>
             </div>
 
-            <div className="mt-6">
+            <div className="mt-6 p-4">
               <p className="text-gray-600 text-sm">
-                Become a Chitralekha Member for the best products, inspiration
-                and stories.
+                Become a Nyke Member for the best products, inspiration and
+                stories.
                 <span className="text-black font-medium ml-1 hover:underline cursor-pointer">
                   Learn more
                 </span>
               </p>
             </div>
 
-            <div className="mt-6">
+            <div className="mt-6 p-4">
               {isSignedIn ? (
                 <SignOutButton>
                   <button className="px-6 py-2 rounded-full bg-black text-white font-medium">

@@ -90,9 +90,9 @@ export function Header() {
 
           {/* Favorites */}
           <Link
-            href="/favorite"
+            href="/shoes"
             className={`transition-colors hover:text-foreground/80 ${
-              pathname?.startsWith("/favorite")
+              pathname?.startsWith("/shoes")
                 ? "text-foreground"
                 : "text-foreground/80"
             }`}

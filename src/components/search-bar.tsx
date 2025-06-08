@@ -20,7 +20,7 @@ export function SearchBar() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
 
-  const popularTerms = ["dunk", "Airforce", "Jordan-1", "Blazer"];
+  const popularTerms = ["dunk", "Airforce", "Jorden-1", "Blazer"];
 
   useEffect(() => {
     const timeout = setTimeout(async () => {
