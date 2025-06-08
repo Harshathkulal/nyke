@@ -18,6 +18,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Nyke",
   description: "Nyke",
+  icons: {
+    icon: "/nike.svg",
+  },
 };
 
 export default function RootLayout({
