@@ -41,6 +41,7 @@ export async function GET(req: NextRequest) {
 
   // If no id param, continue with your filtering logic
   const type = searchParams.get("type");
+  const name = searchParams.get("name");
   const gender = searchParams.get("gender");
   const color = searchParams.get("color");
   const priceMin = searchParams.get("priceMin");
@@ -49,6 +50,7 @@ export async function GET(req: NextRequest) {
   const whereClauses = [];
 
 if (type) whereClauses.push(ilike(products.type, `%${type}%`));
+if (name) whereClauses.push(ilike(products.name, `%${name}%`));
 if (gender) whereClauses.push(ilike(products.gender, `%${gender}%`));
 if (color) whereClauses.push(ilike(products.color, `%${color}%`));
 if (priceMin) whereClauses.push(gte(products.price, Number(priceMin)));

@@ -3,36 +3,23 @@
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, ShoppingBag, Heart, X,} from "lucide-react";
+import { ShoppingBag, Heart } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/redux/store";
 import { SignedIn, SignedOut, SignOutButton } from "@clerk/nextjs";
 import { MobileNav } from "./mobile-nav";
 import { SiNike } from "react-icons/si";
+import { SearchBar } from "./search-bar";
 
 export function Header() {
-  const [search, setSearch] = useState(false);
   const [showHeader, setShowHeader] = useState(true);
   const lastScrollY = useRef(0);
-  const inputRef = useRef<HTMLInputElement>(null);
   const [isClient, setIsClient] = useState(false);
 
   const pathname = usePathname();
   const cartCount = useSelector((state: RootState) => state.cart.itemCount);
 
-  const toggleSearch = (close = false) => {
-    setSearch(close ? false : !search);
-  };
-
-  useEffect(() => {
-    if (search && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [search]);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  useEffect(() => setIsClient(true), []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,9 +38,9 @@ export function Header() {
         showHeader ? "translate-y-0" : "-translate-y-full"
       } fixed`}
     >
-      {/* Top banner for large screens */}
+      {/* Top banner */}
       <div className="bg-gray-100 lg:flex flex-row-reverse text-xs font-semibold p-1 px-6 hidden">
-        {isClient ? (
+        {isClient && (
           <>
             <SignedIn>
               <SignOutButton>
@@ -64,28 +51,28 @@ export function Header() {
               <Link href="/signin">Login</Link>
             </SignedOut>
           </>
-        ) : null}
+        )}
         <p className="px-1">Help | </p>
       </div>
 
       {/* Main navigation */}
-      <div className="container flex h-14 items-center">
+      <div className="flex h-14 items-center px-6">
         {/* Logo */}
         <Link href="/" className="mr-4 items-center gap-2 flex lg:mr-6">
           <SiNike size={48} className="ml-4" />
         </Link>
 
-        {/* Desktop navigation */}
+        {/* Desktop nav */}
         <nav className="hidden lg:flex flex-1 items-center gap-6 text-sm font-medium">
           {[
-            { href: "/shoe", label: "New & Featured" },
-            { href: "/shoe/dunk", label: "Men" },
-            { href: "/shoe/women", label: "Women" },
-            { href: "/shoe/kids", label: "Kids" },
-            { href: "/shoe/sales", label: "Sales" },
+            { href: "/shoes", label: "New & Featured" },
+            { href: "/shoes", label: "Men" },
+            { href: "/shoes", label: "Women" },
+            { href: "/shoes", label: "Kids" },
+            { href: "/shoes", label: "Sales" },
           ].map(({ href, label }) => (
             <Link
-              key={href}
+              key={label}
               href={href}
               className={`transition-colors hover:text-foreground/80 ${
                 pathname === href ? "text-foreground" : "text-foreground/80"
@@ -96,32 +83,12 @@ export function Header() {
           ))}
         </nav>
 
-        {/* Right-side icons */}
+        {/* Right icons */}
         <div className="ml-auto flex items-center gap-4">
-          {/* Desktop search */}
-          <div
-            className="hidden border border-gray-200 bg-gray-100 rounded-full items-center p-1 lg:flex"
-            onClick={() => toggleSearch(false)}
-          >
-            <Search size={18} className="ml-2 text-gray-600" />
-            <input
-              ref={inputRef}
-              type="text"
-              placeholder="Search"
-              className="bg-transparent text-sm ml-1 w-32 focus:outline-none"
-            />
-          </div>
+          {/* SearchBar contains its own trigger and Sheet */}
+          <SearchBar />
 
-          {/* Mobile search icon */}
-          <button
-            className="lg:hidden text-foreground/80 hover:text-foreground"
-            onClick={() => toggleSearch(false)}
-            aria-label="Search"
-          >
-            <Search size={20} />
-          </button>
-
-          {/* Favorite */}
+          {/* Favorites */}
           <Link
             href="/favorite"
             className={`transition-colors hover:text-foreground/80 ${
@@ -152,60 +119,10 @@ export function Header() {
             )}
           </Link>
 
-          {/* Mobile nav menu */}
+          {/* Mobile Navigation */}
           <MobileNav />
         </div>
       </div>
-
-      {/* Full-screen mobile search overlay */}
-      {search && (
-        <div className="fixed inset-0 z-50">
-          <div
-            onClick={() => toggleSearch(true)}
-            className="fixed inset-0 bg-black bg-opacity-50"
-          />
-          <div className="fixed top-0 left-0 w-full h-60 bg-white shadow-lg">
-            <div className="container mx-auto p-4">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center border border-gray-300 bg-gray-100 rounded-md w-full p-2">
-                  <Search size={20} className="text-gray-500 mr-2" />
-                  <input
-                    ref={inputRef}
-                    type="text"
-                    placeholder="Search"
-                    className="bg-transparent w-full focus:outline-none"
-                  />
-                </div>
-                <button
-                  className="font-medium text-gray-700 hover:text-gray-900"
-                  onClick={() => toggleSearch(true)}
-                  aria-label="Close search"
-                >
-                  <X size={20} className="mr-1" />
-                  <span>Cancel</span>
-                </button>
-              </div>
-
-              <div className="mt-6">
-                <p className="text-sm text-gray-500">Popular Search Terms</p>
-                <ul className="mt-2 space-y-2">
-                  {["dunk", "Airforce", "Jordan-1", "Blazer"].map((term) => (
-                    <li key={term}>
-                      <Link
-                        href={`/shoe/${term}`}
-                        onClick={() => toggleSearch(true)}
-                        className="text-gray-800 hover:underline"
-                      >
-                        {term.replace("-", " ")}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </header>
   );
 }
