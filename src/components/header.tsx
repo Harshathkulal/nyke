@@ -21,6 +21,7 @@ export function Header() {
 
   useEffect(() => setIsClient(true), []);
 
+  // Handle scroll to show/hide header
   useEffect(() => {
     const handleScroll = () => {
       const currentY = window.scrollY;
@@ -38,7 +39,6 @@ export function Header() {
         showHeader ? "translate-y-0" : "-translate-y-full"
       } fixed`}
     >
-      {/* Top banner */}
       <div className="bg-gray-100 lg:flex flex-row-reverse text-xs font-semibold p-1 px-6 hidden">
         {isClient && (
           <>
@@ -55,14 +55,11 @@ export function Header() {
         <p className="px-1">Help | </p>
       </div>
 
-      {/* Main navigation */}
       <div className="flex h-14 items-center px-6">
-        {/* Logo */}
         <Link href="/" className="mr-4 items-center gap-2 flex lg:mr-6">
           <SiNike size={48} className="ml-4" />
         </Link>
 
-        {/* Desktop nav */}
         <nav className="hidden lg:flex flex-1 items-center gap-6 text-sm font-medium">
           {[
             { href: "/shoes", label: "New & Featured" },
@@ -83,12 +80,8 @@ export function Header() {
           ))}
         </nav>
 
-        {/* Right icons */}
         <div className="ml-auto flex items-center gap-4">
-          {/* SearchBar contains its own trigger and Sheet */}
           <SearchBar />
-
-          {/* Favorites */}
           <Link
             href="/shoes"
             className={`transition-colors hover:text-foreground/80 ${
@@ -100,8 +93,6 @@ export function Header() {
           >
             <Heart size={20} />
           </Link>
-
-          {/* Cart */}
           <Link
             href="/cart"
             className={`relative transition-colors hover:text-foreground/80 ${
@@ -119,7 +110,6 @@ export function Header() {
             )}
           </Link>
 
-          {/* Mobile Navigation */}
           <MobileNav />
         </div>
       </div>

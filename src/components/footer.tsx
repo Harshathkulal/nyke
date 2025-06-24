@@ -25,7 +25,6 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Help Section */}
           <div className="space-y-3">
             <p
               className="font-medium flex justify-between lg:cursor-default cursor-pointer"
@@ -50,14 +49,15 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Company Section */}
           <div className="space-y-3">
             <p
               className="font-medium flex justify-between lg:cursor-default cursor-pointer"
               onClick={() => setCompanyOpen(!companyOpen)}
             >
               COMPANY
-              <span className="text-lg lg:hidden">{companyOpen ? "-" : "+"}</span>
+              <span className="text-lg lg:hidden">
+                {companyOpen ? "-" : "+"}
+              </span>
             </p>
             {hasMounted && companyOpen && (
               <ul className="font-medium text-gray-500 space-y-2 lg:hidden">
@@ -73,7 +73,6 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Social Media Icons */}
           <div className="flex gap-4">
             <FaFacebook />
             <FaInstagram />
@@ -82,16 +81,31 @@ export const Footer = () => {
           </div>
         </div>
 
-        {/* Footer Bottom */}
         <div className="flex justify-between m-2 mb-0 flex-col lg:flex-row gap-2 mt-10">
           <span className="text-sm text-gray-500 sm:text-center">
             © 2025 Nyke, Inc. All rights reserved.
           </span>
           <ul className="text-sm font-medium text-gray-500 flex flex-col lg:flex-row gap-4 mt-2">
-            <li><Link href="/" className="hover:text-white">Guides</Link></li>
-            <li><Link href="/" className="hover:text-white">Terms of Sale</Link></li>
-            <li><Link href="/" className="hover:text-white">Terms of Use</Link></li>
-            <li><Link href="/" className="hover:text-white">Privacy Policy</Link></li>
+            <li>
+              <Link href="/" className="hover:text-white">
+                Guides
+              </Link>
+            </li>
+            <li>
+              <Link href="/" className="hover:text-white">
+                Terms of Sale
+              </Link>
+            </li>
+            <li>
+              <Link href="/" className="hover:text-white">
+                Terms of Use
+              </Link>
+            </li>
+            <li>
+              <Link href="/" className="hover:text-white">
+                Privacy Policy
+              </Link>
+            </li>
           </ul>
         </div>
       </div>

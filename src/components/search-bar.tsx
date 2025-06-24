@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Search } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -13,7 +13,7 @@ type SearchResult = {
 };
 
 export function SearchBar() {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasFetched, setHasFetched] = useState(false);
@@ -22,37 +22,42 @@ export function SearchBar() {
 
   const popularTerms = ["dunk", "Airforce", "Jorden-1", "Blazer"];
 
+  const fetchSearchResults = useCallback(async () => {
+    if (!query.trim()) {
+      setSearchResults([]);
+      setHasFetched(false);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setHasFetched(false);
+
+      const res = await fetch(
+        `/api/products?name=${encodeURIComponent(query)}`
+      );
+      const data = await res.json();
+      setSearchResults(data || []);
+    } catch (err) {
+      console.error("Search error:", err);
+      setSearchResults([]);
+    } finally {
+      setLoading(false);
+      setHasFetched(true);
+    }
+  }, [query]);
+
   useEffect(() => {
-    const timeout = setTimeout(async () => {
-      if (query.trim()) {
-        try {
-          setLoading(true);
-          setHasFetched(false);
-          const res = await fetch(
-            `/api/products?name=${encodeURIComponent(query)}`
-          );
-          const data = await res.json();
-          setSearchResults(data || []);
-        } catch (err) {
-          console.error("Search error:", err);
-          setSearchResults([]);
-        } finally {
-          setLoading(false);
-          setHasFetched(true);
-        }
-      } else {
-        setSearchResults([]);
-        setHasFetched(false);
-        setLoading(false);
-      }
+    const timeout = setTimeout(() => {
+      fetchSearchResults();
     }, 400);
 
     return () => clearTimeout(timeout);
-  }, [query]);
+  }, [fetchSearchResults]);
 
   return (
     <>
-      {/* Desktop Search Button */}
       <div
         onClick={() => setOpen(true)}
         className="hidden lg:flex border border-gray-200 bg-gray-100 rounded-full items-center p-1 cursor-pointer"
@@ -61,7 +66,6 @@ export function SearchBar() {
         <span className="text-sm ml-1 text-gray-600 w-32">Search</span>
       </div>
 
-      {/* Mobile Search Icon */}
       <button
         className="lg:hidden text-foreground/80 hover:text-foreground"
         onClick={() => setOpen(true)}
@@ -70,12 +74,9 @@ export function SearchBar() {
         <Search size={20} />
       </button>
 
-      {/* Sheet Content */}
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent side="top" className="h-[250px] pt-4 px-4">
-          {/* Header */}
           <div className="flex justify-between mb-4">
-            {/* Logo */}
             <SheetTitle>
               <div className="text-xl font-bold hidden lg:flex">Logo</div>
             </SheetTitle>
@@ -95,7 +96,6 @@ export function SearchBar() {
                 </div>
               </div>
 
-              {/* Search Results or Popular Terms */}
               <div className="flex justify-center items-start">
                 <div className=" flex flex-col items-start w-full max-w-md space-y-2 overflow-y-auto max-h-40 pr-1">
                   {query ? (
@@ -120,7 +120,7 @@ export function SearchBar() {
                                   className="text-gray-800 hover:underline flex items-center space-x-2 gap-4"
                                 >
                                   {item.name}
-                                  <Image 
+                                  <Image
                                     src={item.imageUrl}
                                     alt={item.name}
                                     width={30}
@@ -165,11 +165,8 @@ export function SearchBar() {
               </div>
             </div>
 
-            {/* Close Button */}
             <div className="pl-8"></div>
           </div>
-
-          {/* Centered Search Input */}
         </SheetContent>
       </Sheet>
     </>

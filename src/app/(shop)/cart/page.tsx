@@ -12,6 +12,7 @@ const Cart = () => {
   const cartItems = useAppSelector(selectCartItems);
   const dispatch = useAppDispatch();
 
+  // Method to Calculate subtotal, estimated tax, and order total
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
@@ -30,7 +31,10 @@ const Cart = () => {
         {cartItems.length === 0 ? (
           <div className="mr-10">
             <p className="text-gray-500">There are no items in your bag.</p>
-            <Link href="/shoes/" className="text-xs flex items-center mt-4 font-medium">
+            <Link
+              href="/shoes/"
+              className="text-xs flex items-center mt-4 font-medium"
+            >
               Continue Shopping <FaArrowRight />
             </Link>
           </div>
@@ -55,7 +59,9 @@ const Cart = () => {
                   </div>
 
                   <p className="font-medium text-gray-500">{item.feature}</p>
-                  <p className="font-medium text-gray-500 mt-2">Size: {item.size}</p>
+                  <p className="font-medium text-gray-500 mt-2">
+                    Size: {item.size}
+                  </p>
                   <p className="font-medium text-gray-500 mt-2">
                     Quantity: {item.quantity}
                   </p>

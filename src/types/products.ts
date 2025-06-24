@@ -5,7 +5,7 @@ export type Product = {
   price: string;
   feature: string;
   gender: string;
-  imageSrc?: string;   // optional, map to your DB image url field
+  imageSrc?: string;
   imageUrl?: string;
   imageAlt?: string;
 };

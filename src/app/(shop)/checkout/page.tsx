@@ -12,7 +12,6 @@ const Checkout = () => {
 
       <div className="stripe-payment-container">
         <p className="text-lg font-semibold">Checkout with Stripe</p>
-        {/* Add your Stripe button or form here */}
         <button className="btn-stripe">
           Pay with Google Pay (Temporarily)
         </button>

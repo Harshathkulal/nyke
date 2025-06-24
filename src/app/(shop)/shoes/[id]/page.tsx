@@ -21,13 +21,13 @@ export default function ShoeDetail() {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [isSizeSelected, setIsSizeSelected] = useState<boolean>(false);
 
-  // Fetch product details
+  // function to fetch product details by ID
   useEffect(() => {
     if (!id) return;
 
     const fetchProduct = async () => {
       setLoading(true);
-      setError(null); // Reset error before a new request
+      setError(null);
       try {
         const res = await fetch(`/api/products?id=${id}`);
         if (!res.ok) {
@@ -40,8 +40,8 @@ export default function ShoeDetail() {
         setProduct(data);
       } catch (error: unknown) {
         console.error("Error fetching product:", error);
-        setError(error instanceof Error ? error.message : 'An error occurred');
-        setProduct(null); // In case of error, reset product state
+        setError(error instanceof Error ? error.message : "An error occurred");
+        setProduct(null);
       } finally {
         setLoading(false);
       }
@@ -50,13 +50,13 @@ export default function ShoeDetail() {
     fetchProduct();
   }, [id]);
 
-  // Handle size selection
+  // function to handle size selection
   const handleSelectSize = (size: string) => {
     setSelectedSize(size);
     setIsSizeSelected(false);
   };
 
-  // Add to cart handler
+  // function to Add to cart
   const handleAddToCart = () => {
     if (!product || !selectedSize) {
       setIsSizeSelected(true);
@@ -77,14 +77,12 @@ export default function ShoeDetail() {
     toast("Product added to cart!");
   };
 
-  // Rendering Logic
   if (loading) return <DetailLoading />;
-  if (error) return <NoProductFound />; // Display error message in the "No Product Found" component
-  if (!product) return <NoProductFound />; // Handle edge case where product is null but no error
+  if (error) return <NoProductFound />;
+  if (!product) return <NoProductFound />;
 
   return (
     <div className="flex mt-10 lg:p-5 justify-between lg:justify-around m-4 flex-wrap lg:px-24">
-      {/* Mobile heading */}
       <div className="lg:hidden">
         <p className="text-2xl font-medium">{product.name}</p>
         <p className="font-medium">{product.gender}s Shoes</p>
@@ -95,7 +93,6 @@ export default function ShoeDetail() {
         </p>
       </div>
 
-      {/* Image Section */}
       <div className="flex gap-2 mt-4">
         <div className="lg:flex flex-col gap-2 hidden">
           {[...Array(4)].map((_, i) => (
@@ -120,7 +117,6 @@ export default function ShoeDetail() {
         </div>
       </div>
 
-      {/* Details Section */}
       <div className="flex flex-col">
         <div className="hidden lg:block">
           <p className="text-2xl">{product.name}</p>

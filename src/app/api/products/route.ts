@@ -3,12 +3,12 @@ import { products } from "@/db/schema";
 import { eq, and, gte, lte, ilike } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
+// function to handle GET requests for products by id
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
 
   const id = searchParams.get("id");
   if (id) {
-    // Fetch product by ID and return immediately
     try {
       const product = await db
         .select({
@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
           color: products.color,
         })
         .from(products)
-        .where(eq(products.id, Number(id))) // Make sure id is number if your schema expects it
+        .where(eq(products.id, Number(id)))
         .limit(1);
 
       if (!product.length) {
@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // If no id param, continue with your filtering logic
+  // function to handle GET requests for products filtered by various parameters
   const type = searchParams.get("type");
   const name = searchParams.get("name");
   const gender = searchParams.get("gender");
@@ -49,12 +49,12 @@ export async function GET(req: NextRequest) {
 
   const whereClauses = [];
 
-if (type) whereClauses.push(ilike(products.type, `%${type}%`));
-if (name) whereClauses.push(ilike(products.name, `%${name}%`));
-if (gender) whereClauses.push(ilike(products.gender, `%${gender}%`));
-if (color) whereClauses.push(ilike(products.color, `%${color}%`));
-if (priceMin) whereClauses.push(gte(products.price, Number(priceMin)));
-if (priceMax) whereClauses.push(lte(products.price, Number(priceMax)));
+  if (type) whereClauses.push(ilike(products.type, `%${type}%`));
+  if (name) whereClauses.push(ilike(products.name, `%${name}%`));
+  if (gender) whereClauses.push(ilike(products.gender, `%${gender}%`));
+  if (color) whereClauses.push(ilike(products.color, `%${color}%`));
+  if (priceMin) whereClauses.push(gte(products.price, Number(priceMin)));
+  if (priceMax) whereClauses.push(lte(products.price, Number(priceMax)));
 
   try {
     const filtered = await db
