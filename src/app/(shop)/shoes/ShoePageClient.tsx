@@ -2,6 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import axios from "axios";
 import ProductList from "@/components/products/product-list";
 import SortForm from "@/components/products/SortForm";
 import type { Product } from "@/types/products";
@@ -25,19 +26,17 @@ export default function ShoePageClient() {
       setError(null);
 
       try {
-        const params = new URLSearchParams();
-        if (type) params.set("type", type);
+        const params: Record<string, string> = {};
+        if (type) params.type = type;
 
-        const res = await fetch(`/api/products?${params.toString()}`);
+        const { data } = await axios.get("/api/products", {
+          params,
+        });
 
-        if (!res.ok) throw new Error("Failed to fetch products.");
-
-        const filtered: Product[] = await res.json();
-
-        setProducts(filtered);
-        setSortedProducts(filtered);
-      } catch (error) {
-        console.error("Error fetching products:", error);
+        setProducts(data);
+        setSortedProducts(data);
+      } catch (err) {
+        console.error("Error fetching products:", err);
         setError("Failed to load products. Please try again later.");
       } finally {
         setLoading(false);
@@ -50,11 +49,13 @@ export default function ShoePageClient() {
   useEffect(() => {
     const sortProducts = () => {
       const sorted = [...products];
+
       if (sort === "priceLowToHigh") {
         sorted.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
       } else if (sort === "priceHighToLow") {
         sorted.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
       }
+
       setSortedProducts(sorted);
     };
 

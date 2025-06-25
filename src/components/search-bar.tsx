@@ -4,7 +4,9 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { Search } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import axios from "axios";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { SiNike } from "react-icons/si";
 
 type SearchResult = {
   id: string;
@@ -34,10 +36,10 @@ export function SearchBar() {
       setLoading(true);
       setHasFetched(false);
 
-      const res = await fetch(
-        `/api/products?name=${encodeURIComponent(query)}`
-      );
-      const data = await res.json();
+      const { data } = await axios.get("/api/products", {
+        params: { name: query },
+      });
+
       setSearchResults(data || []);
     } catch (err) {
       console.error("Search error:", err);
@@ -78,7 +80,9 @@ export function SearchBar() {
         <SheetContent side="top" className="h-[250px] pt-4 px-4">
           <div className="flex justify-between mb-4">
             <SheetTitle>
-              <div className="text-xl font-bold hidden lg:flex">Logo</div>
+              <div className="text-xl font-bold hidden lg:flex">
+                <SiNike size={48} className="ml-4" />
+              </div>
             </SheetTitle>
 
             <div className="flex-1 text-center">
@@ -97,7 +101,7 @@ export function SearchBar() {
               </div>
 
               <div className="flex justify-center items-start">
-                <div className=" flex flex-col items-start w-full max-w-md space-y-2 overflow-y-auto max-h-40 pr-1">
+                <div className="flex flex-col items-start w-full max-w-md space-y-2 overflow-y-auto max-h-40 pr-1">
                   {query ? (
                     <>
                       {loading && (

@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useDispatch } from "react-redux";
+import axios from "axios";
 import { addToCart } from "@/lib/redux/cartSlice";
-import { sizes } from "@/data/size"; // or define locally
+import { sizes } from "@/data/size";
 import Image from "next/image";
 import { toast } from "sonner";
 import { Product } from "@/types/products";
@@ -17,7 +18,7 @@ export default function ShoeDetail() {
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null); // New state for errors
+  const [error, setError] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [isSizeSelected, setIsSizeSelected] = useState<boolean>(false);
 
@@ -29,14 +30,14 @@ export default function ShoeDetail() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`/api/products?id=${id}`);
-        if (!res.ok) {
-          throw new Error("Failed to fetch product.");
-        }
-        const data = await res.json();
+        const { data } = await axios.get<Product>(`/api/products`, {
+          params: { id: id.toString() },
+        });
+
         if (!data || !data.id) {
           throw new Error("Product not found");
         }
+
         setProduct(data);
       } catch (error: unknown) {
         console.error("Error fetching product:", error);
