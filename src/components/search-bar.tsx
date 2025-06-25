@@ -36,8 +36,8 @@ export function SearchBar() {
       setLoading(true);
       setHasFetched(false);
 
-      const { data } = await axios.get("/api/products", {
-        params: { name: query },
+      const { data } = await axios.get("/api/search", {
+        params: { query },
       });
 
       setSearchResults(data || []);

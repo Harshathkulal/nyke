@@ -1,79 +1,37 @@
-import { db } from "@/db/db";
-import { products } from "@/db/schema";
-import { eq, and, gte, lte, ilike } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
+import { getProductById, getFilteredProducts } from "@/lib/db/queries";
 
-// function to handle GET requests for products by id
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-
   const id = searchParams.get("id");
+
   if (id) {
     try {
-      const product = await db
-        .select({
-          id: products.id,
-          name: products.name,
-          imageUrl: products.imageUrl,
-          feature: products.feature,
-          price: products.price,
-          type: products.type,
-          gender: products.gender,
-          color: products.color,
-        })
-        .from(products)
-        .where(eq(products.id, Number(id)))
-        .limit(1);
-
-      if (!product.length) {
-        return NextResponse.json(
-          { error: "Product not found" },
-          { status: 404 }
-        );
+      const product = await getProductById(Number(id));
+      if (!product) {
+        return NextResponse.json({ error: "Product not found" }, { status: 404 });
       }
-
-      return NextResponse.json(product[0]);
+      return NextResponse.json(product);
     } catch (error) {
-      console.error("Fetch error by ID:", error);
+      console.error("Error fetching product by ID:", error);
       return NextResponse.json({ error: "Server error" }, { status: 500 });
     }
   }
 
-  // function to handle GET requests for products filtered by various parameters
-  const type = searchParams.get("type");
-  const name = searchParams.get("name");
-  const gender = searchParams.get("gender");
-  const color = searchParams.get("color");
-  const priceMin = searchParams.get("priceMin");
-  const priceMax = searchParams.get("priceMax");
-
-  const whereClauses = [];
-
-  if (type) whereClauses.push(ilike(products.type, `%${type}%`));
-  if (name) whereClauses.push(ilike(products.name, `%${name}%`));
-  if (gender) whereClauses.push(ilike(products.gender, `%${gender}%`));
-  if (color) whereClauses.push(ilike(products.color, `%${color}%`));
-  if (priceMin) whereClauses.push(gte(products.price, Number(priceMin)));
-  if (priceMax) whereClauses.push(lte(products.price, Number(priceMax)));
+  const filters = {
+    type: searchParams.get("type") || undefined,
+    name: searchParams.get("name") || undefined,
+    gender: searchParams.get("gender") || undefined,
+    color: searchParams.get("color") || undefined,
+    priceMin: searchParams.get("priceMin") ? Number(searchParams.get("priceMin")) : undefined,
+    priceMax: searchParams.get("priceMax") ? Number(searchParams.get("priceMax")) : undefined,
+  };
 
   try {
-    const filtered = await db
-      .select({
-        id: products.id,
-        name: products.name,
-        imageUrl: products.imageUrl,
-        feature: products.feature,
-        price: products.price,
-        type: products.type,
-        gender: products.gender,
-        color: products.color,
-      })
-      .from(products)
-      .where(whereClauses.length ? and(...whereClauses) : undefined);
-
-    return NextResponse.json(filtered);
+    const filteredProducts = await getFilteredProducts(filters);
+    return NextResponse.json(filteredProducts);
   } catch (error) {
-    console.error("Fetch error:", error);
+    console.error("Error fetching filtered products:", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
